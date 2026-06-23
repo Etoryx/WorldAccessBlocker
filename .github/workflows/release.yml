@@ -56,7 +56,10 @@ jobs:
         run: |
           JAR_PATH=$(find target -name "worldaccessblocker-*.jar" ! -name "original-*" | head -1)
           echo "Using JAR: $JAR_PATH"
-          DATA=$(jq -n \
+          # Write metadata to a file and upload it as a file part. Passing multi-line
+          # JSON inline via -F "data=$DATA" corrupts the payload (curl -F parsing),
+          # which previously caused Modrinth to reject it with HTTP 400.
+          jq -n \
             --arg version "$VERSION" \
             --arg changelog "$CHANGELOG" \
             '{
@@ -70,10 +73,10 @@ jobs:
               "loaders": ["paper", "purpur", "folia"],
               "featured": true,
               "file_parts": ["file"]
-            }')
+            }' > modrinth-data.json
           RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "https://api.modrinth.com/v2/version" \
             -H "Authorization: $MODRINTH_TOKEN" \
-            -F "data=$DATA" \
+            -F "data=@modrinth-data.json;type=application/json" \
             -F "file=@${JAR_PATH}")
           HTTP_CODE=$(echo "$RESPONSE" | tail -1)
           BODY=$(echo "$RESPONSE" | head -n -1)
