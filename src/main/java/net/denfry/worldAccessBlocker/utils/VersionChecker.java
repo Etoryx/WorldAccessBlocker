@@ -7,7 +7,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.URI;
 
 public class VersionChecker {
 
@@ -22,7 +22,7 @@ public class VersionChecker {
     public VersionChecker(JavaPlugin plugin, PlatformRuntime runtime) {
         this.plugin = plugin;
         this.runtime = runtime;
-        this.currentVersion = plugin.getDescription().getVersion();
+        this.currentVersion = plugin.getPluginMeta().getVersion();
     }
 
     public void checkAsync() {
@@ -43,7 +43,7 @@ public class VersionChecker {
     }
 
     String fetchResponse() throws IOException {
-        HttpURLConnection conn = (HttpURLConnection) new URL(API_URL).openConnection();
+        HttpURLConnection conn = (HttpURLConnection) URI.create(API_URL).toURL().openConnection();
         conn.setRequestMethod("GET");
         conn.setConnectTimeout(5000);
         conn.setReadTimeout(5000);

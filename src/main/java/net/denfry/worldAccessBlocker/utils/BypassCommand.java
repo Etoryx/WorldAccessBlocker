@@ -34,7 +34,10 @@ public class BypassCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull [] args) {
-        if (!sender.hasPermission("wab.bypass")) {
+        boolean canManage = sender.hasPermission("wab.bypass");
+        boolean canViewStatus = canManage || sender.hasPermission("wab.status");
+
+        if (!canManage && !canViewStatus) {
             sendLocalized(sender, NamedTextColor.RED, "no_permission");
             return true;
         }
@@ -45,14 +48,21 @@ public class BypassCommand implements CommandExecutor, TabCompleter {
         }
 
         return switch (args[0].toLowerCase()) {
-            case "bypass" -> handleBypass(sender, args);
-            case "remove" -> handleRemove(sender, args);
-            case "status" -> handleStatus(sender, args);
+            case "bypass" -> requirePermission(sender, canManage) ? handleBypass(sender, args) : true;
+            case "remove" -> requirePermission(sender, canManage) ? handleRemove(sender, args) : true;
+            case "status" -> requirePermission(sender, canViewStatus) ? handleStatus(sender, args) : true;
             default -> {
                 sendLocalized(sender, NamedTextColor.YELLOW, "wab_usage");
                 yield true;
             }
         };
+    }
+
+    private boolean requirePermission(CommandSender sender, boolean allowed) {
+        if (!allowed) {
+            sendLocalized(sender, NamedTextColor.RED, "no_permission");
+        }
+        return allowed;
     }
 
     private boolean handleBypass(CommandSender sender, String[] args) {
@@ -215,30 +225,44 @@ public class BypassCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String @NotNull [] args) {
-        if (!sender.hasPermission("wab.bypass")) {
+        boolean canManage = sender.hasPermission("wab.bypass");
+        boolean canViewStatus = canManage || sender.hasPermission("wab.status");
+
+        if (!canManage && !canViewStatus) {
             return List.of();
         }
 
         if (args.length == 1) {
-            return Stream.of("bypass", "remove", "status")
+            List<String> subs = new ArrayList<>();
+            if (canManage) {
+                subs.add("bypass");
+                subs.add("remove");
+            }
+            if (canViewStatus) {
+                subs.add("status");
+            }
+            return subs.stream()
                     .filter(cmd -> cmd.startsWith(args[0].toLowerCase()))
                     .toList();
         }
 
-        if (args.length == 2 && (args[0].equalsIgnoreCase("bypass") || args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("status"))) {
+        boolean manageSub = args[0].equalsIgnoreCase("bypass") || args[0].equalsIgnoreCase("remove");
+        boolean statusSub = args[0].equalsIgnoreCase("status");
+
+        if (args.length == 2 && ((manageSub && canManage) || (statusSub && canViewStatus))) {
             return Bukkit.getOnlinePlayers().stream()
                     .map(Player::getName)
                     .filter(name -> name.toLowerCase().startsWith(args[1].toLowerCase()))
                     .toList();
         }
 
-        if (args.length == 3 && (args[0].equalsIgnoreCase("bypass") || args[0].equalsIgnoreCase("remove"))) {
+        if (args.length == 3 && manageSub && canManage) {
             return getAllFeatures().stream()
                     .filter(feature -> feature.startsWith(args[2].toLowerCase()))
                     .toList();
         }
 
-        if (args.length == 4 && args[0].equalsIgnoreCase("bypass")) {
+        if (args.length == 4 && args[0].equalsIgnoreCase("bypass") && canManage) {
             return Stream.of("3600", "7200", "86400")
                     .filter(duration -> duration.startsWith(args[3]))
                     .toList();

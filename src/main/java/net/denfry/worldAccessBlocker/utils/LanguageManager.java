@@ -27,20 +27,25 @@ public class LanguageManager {
     }
 
     private void loadLanguageFile() {
-        String langFileName = "lang/" + language + ".yml";
-        File langFile = new File(plugin.getDataFolder(), langFileName);
-
         plugin.saveResource("lang/en.yml", false);
         plugin.saveResource("lang/ru.yml", false);
 
-        FileConfiguration langConfig;
-        if (!langFile.exists()) {
-            plugin.getLogger().warning("Language file " + langFileName + " not found, falling back to en.yml");
-            langFile = new File(plugin.getDataFolder(), "lang/en.yml");
+        // Always load English first as a base layer so missing keys in other
+        // languages fall back to English instead of showing "Message not found".
+        File enFile = new File(plugin.getDataFolder(), "lang/en.yml");
+        putAll(YamlConfiguration.loadConfiguration(enFile));
+
+        if (!"en".equalsIgnoreCase(language)) {
+            File langFile = new File(plugin.getDataFolder(), "lang/" + language + ".yml");
+            if (langFile.exists()) {
+                putAll(YamlConfiguration.loadConfiguration(langFile));
+            } else {
+                plugin.getLogger().warning("Language file lang/" + language + ".yml not found, falling back to en.yml");
+            }
         }
+    }
 
-        langConfig = YamlConfiguration.loadConfiguration(langFile);
-
+    private void putAll(FileConfiguration langConfig) {
         for (String key : langConfig.getKeys(true)) {
             if (!langConfig.isConfigurationSection(key)) {
                 messages.put(key, langConfig.getString(key, ""));

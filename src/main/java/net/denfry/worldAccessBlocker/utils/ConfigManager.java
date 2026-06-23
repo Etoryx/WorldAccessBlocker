@@ -21,6 +21,7 @@ public class ConfigManager {
 
     private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     private static final String DEFAULT_DATE = "2099-12-31 23:59:59";
+    private static final int CONFIG_VERSION = 1;
 
     private final Map<String, Boolean> customWorldDisables = new HashMap<>();
     private final Map<String, Instant> customWorldRestrictionInstants = new HashMap<>();
@@ -45,6 +46,12 @@ public class ConfigManager {
         useRecurring.clear();
         fallbackSpawnWorlds.clear();
 
+        int fileVersion = config.getInt("config-version", 0);
+        if (fileVersion < CONFIG_VERSION) {
+            plugin.getLogger().warning("config.yml is version " + fileVersion + " but the plugin expects "
+                    + CONFIG_VERSION + ". New options may be missing — compare with the bundled default.");
+        }
+
         lang = config.getString("language", "en");
 
         String timeZoneId = config.getString("time-zone", "UTC");
@@ -63,9 +70,9 @@ public class ConfigManager {
         loadRecurring("end", config.getConfigurationSection("end.recurring"));
         loadRecurring("elytra", config.getConfigurationSection("elytra.recurring"));
 
-        convertOldDaysFormat("nether", config);
-        convertOldDaysFormat("end", config);
-        convertOldDaysFormat("elytra", config);
+        convertOldDaysFormat("nether", config.getConfigurationSection("nether"));
+        convertOldDaysFormat("end", config.getConfigurationSection("end"));
+        convertOldDaysFormat("elytra", config.getConfigurationSection("elytra"));
 
         disableNetherPortalCreation = config.getBoolean("nether.disable-portal-creation", true);
         disableNetherTeleportation = config.getBoolean("nether.disable-teleportation", true);
@@ -159,6 +166,7 @@ public class ConfigManager {
     }
 
     private void convertOldDaysFormat(String feature, ConfigurationSection parent) {
+        if (parent == null) return;
         if (!parent.contains("recurring-allowed-days") || parent.contains("recurring.periods")) return;
 
         List<String> oldDays = parent.getStringList("recurring-allowed-days");

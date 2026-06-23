@@ -22,6 +22,11 @@ public class PaperRuntimeAdapter implements PlatformRuntime {
     }
 
     @Override
+    public void runLater(Runnable task, long delayTicks) {
+        plugin.getServer().getScheduler().runTaskLater(plugin, task, Math.max(1L, delayTicks));
+    }
+
+    @Override
     public void runForPlayer(Player player, Runnable task) {
         plugin.getServer().getScheduler().runTask(plugin, task);
     }

@@ -23,7 +23,7 @@ public class EndBlocker implements Listener {
         if (!plugin.getConfigManager().isDisableEndPortalActivation()) return;
         Instant now = Instant.now();
         if (!plugin.getConfigManager().isRestrictionActive("end", now)) return;
-        if (!plugin.isRestricted(event.getPlayer(), "end")) return;
+        if (!plugin.hasNoBypass(event.getPlayer(), "end")) return;
 
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getHand() == EquipmentSlot.HAND) {
             Block block = event.getClickedBlock();

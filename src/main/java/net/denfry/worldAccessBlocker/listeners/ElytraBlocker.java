@@ -23,24 +23,38 @@ public class ElytraBlocker implements Listener {
 
     public ElytraBlocker(WorldAccessBlocker plugin) {
         this.plugin = plugin;
-        startElytraCheckTask();
     }
 
-    private void startElytraCheckTask() {
+    public void start() {
         plugin.getRuntime().runRepeatingGlobal(() -> {
-            if (!plugin.getConfigManager().isDisableElytraEquip()) return;
             Instant now = Instant.now();
-            if (!plugin.getConfigManager().isRestrictionActive("elytra_equip", now)) return;
+            boolean enforceEquip = plugin.getConfigManager().isDisableElytraEquip()
+                    && plugin.getConfigManager().isRestrictionActive("elytra_equip", now);
+            boolean enforceFlight = plugin.getConfigManager().isDisableElytraFlight()
+                    && plugin.getConfigManager().isRestrictionActive("elytra", now);
+            if (!enforceEquip && !enforceFlight) return;
 
             for (Player player : plugin.getServer().getOnlinePlayers()) {
-                plugin.getRuntime().runForPlayer(player, () -> enforceElytraUnequip(player));
+                plugin.getRuntime().runForPlayer(player, () -> {
+                    if (enforceEquip) enforceElytraUnequip(player);
+                    if (enforceFlight) enforceNoGlide(player);
+                });
             }
         }, 0L, 20L);
     }
 
+    private void enforceNoGlide(Player player) {
+        if (player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR) return;
+        if (!player.isGliding()) return;
+        if (!plugin.hasNoBypass(player, "elytra")) return;
+
+        player.setGliding(false);
+        plugin.sendRestrictionMessage(player, "elytra");
+    }
+
     private void enforceElytraUnequip(Player player) {
         if (player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR) return;
-        if (!plugin.isRestricted(player, "elytra")) return;
+        if (!plugin.hasNoBypass(player, "elytra")) return;
 
         PlayerInventory inventory = player.getInventory();
         ItemStack chestplate = inventory.getChestplate();
@@ -66,7 +80,7 @@ public class ElytraBlocker implements Listener {
         Instant now = Instant.now();
         if (!plugin.getConfigManager().isRestrictionActive("elytra", now)) return;
         if (player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR) return;
-        if (!plugin.isRestricted(player, "elytra")) return;
+        if (!plugin.hasNoBypass(player, "elytra")) return;
 
         event.setCancelled(true);
         plugin.sendRestrictionMessage(player, "elytra");
@@ -79,7 +93,7 @@ public class ElytraBlocker implements Listener {
         if (!plugin.getConfigManager().isRestrictionActive("elytra_equip", now)) return;
         if (!(event.getWhoClicked() instanceof Player player)) return;
         if (player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR) return;
-        if (!plugin.isRestricted(player, "elytra")) return;
+        if (!plugin.hasNoBypass(player, "elytra")) return;
 
         ItemStack cursor = event.getCursor();
         ItemStack currentItem = event.getCurrentItem();
@@ -104,7 +118,7 @@ public class ElytraBlocker implements Listener {
         if (!plugin.getConfigManager().isRestrictionActive("elytra_equip", now)) return;
         if (!(event.getWhoClicked() instanceof Player player)) return;
         if (player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR) return;
-        if (!plugin.isRestricted(player, "elytra")) return;
+        if (!plugin.hasNoBypass(player, "elytra")) return;
 
         if (event.getRawSlots().contains(38) && event.getNewItems().values().stream()
                 .anyMatch(item -> item.getType() == Material.ELYTRA)) {
@@ -120,7 +134,7 @@ public class ElytraBlocker implements Listener {
         if (!plugin.getConfigManager().isRestrictionActive("elytra_equip", now)) return;
         Player player = event.getPlayer();
         if (player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR) return;
-        if (!plugin.isRestricted(player, "elytra")) return;
+        if (!plugin.hasNoBypass(player, "elytra")) return;
 
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             ItemStack item = event.getItem();

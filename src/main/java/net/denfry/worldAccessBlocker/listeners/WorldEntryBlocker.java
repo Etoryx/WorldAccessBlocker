@@ -47,6 +47,6 @@ public class WorldEntryBlocker implements Listener {
         if (!plugin.getConfigManager().getCustomWorlds().contains(worldName)) return false;
         if (!plugin.getConfigManager().isCustomWorldDisabled(worldName)) return false;
         if (!plugin.getConfigManager().isRestrictionActive(worldName, now)) return false;
-        return plugin.isRestricted(player, worldName);
+        return plugin.hasNoBypass(player, worldName);
     }
 }

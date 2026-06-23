@@ -49,6 +49,23 @@ public class FoliaRuntimeAdapter implements PlatformRuntime {
     }
 
     @Override
+    public void runLater(Runnable task, long delayTicks) {
+        try {
+            Object globalRegionScheduler = Bukkit.class.getMethod("getGlobalRegionScheduler").invoke(null);
+            Method runDelayed = globalRegionScheduler.getClass().getMethod(
+                    "runDelayed",
+                    Plugin.class,
+                    Consumer.class,
+                    long.class
+            );
+            Consumer<Object> consumer = ignored -> task.run();
+            runDelayed.invoke(globalRegionScheduler, plugin, consumer, Math.max(1L, delayTicks));
+        } catch (Exception ex) {
+            fallback.runLater(task, delayTicks);
+        }
+    }
+
+    @Override
     public void runForPlayer(Player player, Runnable task) {
         try {
             Object entityScheduler = player.getClass().getMethod("getScheduler").invoke(player);
@@ -82,6 +99,7 @@ public class FoliaRuntimeAdapter implements PlatformRuntime {
 
     @Override
     public void teleportPlayer(Player player, Location location) {
-        player.teleport(location);
+        // On Folia cross-region/cross-world teleports must be async.
+        player.teleportAsync(location);
     }
 }

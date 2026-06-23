@@ -25,7 +25,7 @@ jobs:
           cache: 'maven'
 
       - name: Build
-        run: mvn clean package -DskipTests
+        run: mvn clean package
 
       - name: Extract version from tag
         id: version
@@ -65,9 +65,9 @@ jobs:
               "name": ("WorldAccessBlocker " + $version),
               "changelog": $changelog,
               "dependencies": [],
-              "game_versions": ["1.21.4"],
+              "game_versions": ["1.20.5", "1.20.6", "1.21", "1.21.1", "1.21.2", "1.21.3", "1.21.4"],
               "version_type": "release",
-              "loaders": ["paper", "spigot", "bukkit", "folia"],
+              "loaders": ["paper", "purpur", "folia"],
               "featured": true,
               "file_parts": ["file"]
             }')

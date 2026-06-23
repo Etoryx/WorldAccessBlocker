@@ -36,15 +36,16 @@ public class PortalBlocker implements Listener {
         if (event.getCause() == PlayerPortalEvent.TeleportCause.NETHER_PORTAL &&
                 plugin.getConfigManager().isDisableNetherTeleportation() &&
                 plugin.getConfigManager().isRestrictionActive("nether", now) &&
-                plugin.isRestricted(player, "nether")) {
+                plugin.hasNoBypass(player, "nether")) {
             event.setCancelled(true);
             plugin.sendRestrictionMessage(player, "nether");
         }
 
         if (event.getCause() == PlayerPortalEvent.TeleportCause.END_PORTAL &&
+                event.getFrom().getWorld().getEnvironment() != World.Environment.THE_END &&
                 plugin.getConfigManager().isDisableEndPortalActivation() &&
                 plugin.getConfigManager().isRestrictionActive("end", now) &&
-                plugin.isRestricted(player, "end")) {
+                plugin.hasNoBypass(player, "end")) {
             event.setCancelled(true);
             plugin.sendRestrictionMessage(player, "end");
         }
@@ -59,7 +60,7 @@ public class PortalBlocker implements Listener {
 
         if (event.getEntity() instanceof Vehicle vehicle) {
             for (Entity passenger : vehicle.getPassengers()) {
-                if (passenger instanceof Player player && plugin.isRestricted(player, "nether")) {
+                if (passenger instanceof Player player && plugin.hasNoBypass(player, "nether")) {
                     event.setCancelled(true);
                     plugin.sendRestrictionMessage(player, "nether");
                     break;
@@ -91,7 +92,7 @@ public class PortalBlocker implements Listener {
             }
         }
 
-        if (player != null && plugin.isRestricted(player, "nether") &&
+        if (player != null && plugin.hasNoBypass(player, "nether") &&
                 player.getGameMode() != org.bukkit.GameMode.CREATIVE &&
                 player.getGameMode() != org.bukkit.GameMode.SPECTATOR) {
             event.setCancelled(true);
@@ -127,7 +128,7 @@ public class PortalBlocker implements Listener {
         if (targetEnv == World.Environment.NETHER &&
                 plugin.getConfigManager().isDisableNetherTeleportation() &&
                 plugin.getConfigManager().isRestrictionActive("nether", now) &&
-                plugin.isRestricted(player, "nether")) {
+                plugin.hasNoBypass(player, "nether")) {
             event.setCancelled(true);
             plugin.sendRestrictionMessage(player, "nether");
             return;
@@ -136,7 +137,7 @@ public class PortalBlocker implements Listener {
         if (targetEnv == World.Environment.THE_END &&
                 plugin.getConfigManager().isDisableEndPortalActivation() &&
                 plugin.getConfigManager().isRestrictionActive("end", now) &&
-                plugin.isRestricted(player, "end")) {
+                plugin.hasNoBypass(player, "end")) {
             event.setCancelled(true);
             plugin.sendRestrictionMessage(player, "end");
         }
@@ -151,7 +152,7 @@ public class PortalBlocker implements Listener {
         if (env == World.Environment.NETHER &&
                 plugin.getConfigManager().isDisableNether() &&
                 plugin.getConfigManager().isRestrictionActive("nether", now) &&
-                plugin.isRestricted(player, "nether")) {
+                plugin.hasNoBypass(player, "nether")) {
             plugin.getRuntime().runForPlayer(player, () -> {
                 plugin.getRuntime().teleportPlayer(player, plugin.getFallbackSpawn("nether"));
                 plugin.sendRestrictionMessage(player, "nether");
@@ -161,7 +162,7 @@ public class PortalBlocker implements Listener {
         if (env == World.Environment.THE_END &&
                 plugin.getConfigManager().isDisableEnd() &&
                 plugin.getConfigManager().isRestrictionActive("end", now) &&
-                plugin.isRestricted(player, "end")) {
+                plugin.hasNoBypass(player, "end")) {
             plugin.getRuntime().runForPlayer(player, () -> {
                 plugin.getRuntime().teleportPlayer(player, plugin.getFallbackSpawn("end"));
                 plugin.sendRestrictionMessage(player, "end");

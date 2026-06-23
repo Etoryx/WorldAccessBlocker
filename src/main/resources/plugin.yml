@@ -1,7 +1,7 @@
 name: WorldAccessBlocker
 version: '${project.version}'
 main: net.denfry.worldAccessBlocker.WorldAccessBlocker
-api-version: '1.16'
+api-version: '1.20'
 load: STARTUP
 authors: [ denfry ]
 description: Plugin that blocks access to end, nether, elytra with enhanced features
@@ -14,14 +14,16 @@ commands:
     permission: wab.reload
   wab:
     description: "Manage bypasses and restriction status"
-    permission: wab.bypass
 permissions:
   wab.reload:
     description: "Allows reloading the config"
     default: op
   wab.bypass:
-    description: "Allows bypassing restrictions"
+    description: "Allows granting, removing and viewing bypasses"
     default: op
+  wab.status:
+    description: "Allows viewing restriction status (own and others')"
+    default: true
   wab.update-notify:
     description: "Receive in-game notifications when a new plugin version is available"
     default: op

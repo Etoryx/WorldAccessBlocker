@@ -5,7 +5,7 @@
 [![Version](https://img.shields.io/modrinth/v/worldaccessblocker?label=Modrinth)](https://modrinth.com/plugin/worldaccessblocker)
 [![License](https://img.shields.io/github/license/denfry/WorldAccessBlocker)](LICENSE)
 
-**WorldAccessBlocker** is a lightweight Minecraft plugin that restricts player access to the Nether, the End, elytra flight, and custom worlds — by fixed date or recurring weekly schedule. Works natively on Paper, Spigot, Bukkit, Purpur, and Folia.
+**WorldAccessBlocker** is a lightweight Minecraft plugin that restricts player access to the Nether, the End, elytra flight, and custom worlds — by fixed date or recurring weekly schedule. Built for Paper and its forks (Purpur, Folia), using the native Adventure and Folia-aware schedulers.
 
 ---
 
@@ -31,13 +31,12 @@
 
 | Platform | Versions | Status |
 |---|---|---|
-| Paper | 1.16 – 1.21.4 | ✅ Full support |
-| Spigot | 1.16 – 1.21.4 | ✅ Full support |
-| Bukkit | 1.16 – 1.21.4 | ✅ Full support |
-| Purpur | 1.16 – 1.21.4 | ✅ Full support |
-| Folia | 1.20+ | ✅ Native scheduler |
+| Paper | 1.20.5 – 1.21.4 | ✅ Full support |
+| Purpur | 1.20.5 – 1.21.4 | ✅ Full support |
+| Folia | 1.20.5+ | ✅ Native scheduler |
+| Spigot / Bukkit | — | ❌ Not supported (requires Paper's Adventure & scheduler APIs) |
 
-**Requirements:** Java 21+
+**Requirements:** Java 21+ (Paper 1.20.5+ runs on Java 21). Built against the Paper 1.21.4 API.
 
 ---
 
@@ -57,12 +56,13 @@
 |---|---|---|---|
 | `/wab bypass <player> <feature> <seconds>` | `wab.bypass` | op | Grant a timed bypass |
 | `/wab remove <player> <feature>` | `wab.bypass` | op | Remove a bypass |
-| `/wab status [player]` | `wab.bypass` | op | Show restriction status |
+| `/wab status [player]` | `wab.status` | all | Show restriction status |
 | `/wabreload` | `wab.reload` | op | Reload config without restart |
 
 | Permission | Default | Description |
 |---|---|---|
-| `wab.bypass` | op | Grant/remove/view bypasses |
+| `wab.bypass` | op | Grant/remove bypasses |
+| `wab.status` | all | View restriction status (own and others') |
 | `wab.reload` | op | Reload plugin config |
 | `wab.update-notify` | op | Receive in-game new-version alerts |
 
@@ -70,9 +70,9 @@
 
 ## How Does the Schedule Work?
 
-When `recurring:` is defined under a feature, `restriction-date` is ignored entirely. The plugin checks whether the current day and time fall inside any configured period — if yes, access is blocked; otherwise it is open.
+When `recurring:` is defined under a feature, `restriction-date` is ignored entirely. Each period defines an **allowed (open) window**: the plugin checks whether the current day and time fall inside any configured period — if yes, access is **open**; otherwise it is **blocked**.
 
-An **empty** `periods: []` means **always blocked** — useful for locking a world indefinitely.
+An **empty** `periods: []` means **always blocked** (no open windows exist) — useful for locking a world indefinitely.
 
 ```yaml
 nether:

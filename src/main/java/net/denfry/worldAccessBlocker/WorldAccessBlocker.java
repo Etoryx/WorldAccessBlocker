@@ -50,7 +50,9 @@ public class WorldAccessBlocker extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new PortalBlocker(this), this);
         getServer().getPluginManager().registerEvents(new EndBlocker(this), this);
-        getServer().getPluginManager().registerEvents(new ElytraBlocker(this), this);
+        ElytraBlocker elytraBlocker = new ElytraBlocker(this);
+        getServer().getPluginManager().registerEvents(elytraBlocker, this);
+        elytraBlocker.start();
         getServer().getPluginManager().registerEvents(new WorldEntryBlocker(this), this);
 
         if (getCommand("wabreload") != null) {
@@ -74,9 +76,9 @@ public class WorldAccessBlocker extends JavaPlugin {
         try {
             int pluginId = 26810;
             Metrics metrics = new Metrics(this, pluginId);
-            metrics.addCustomChart(new SimplePie("nether_disabled", () -> configManager.isDisableNether() ? "Enabled" : "Disabled"));
-            metrics.addCustomChart(new SimplePie("end_disabled", () -> configManager.isDisableEnd() ? "Enabled" : "Disabled"));
-            metrics.addCustomChart(new SimplePie("elytra_disabled", () -> configManager.isDisableElytra() ? "Enabled" : "Disabled"));
+            metrics.addCustomChart(new SimplePie("nether_blocking", () -> configManager.isDisableNether() ? "Enabled" : "Disabled"));
+            metrics.addCustomChart(new SimplePie("end_blocking", () -> configManager.isDisableEnd() ? "Enabled" : "Disabled"));
+            metrics.addCustomChart(new SimplePie("elytra_blocking", () -> configManager.isDisableElytra() ? "Enabled" : "Disabled"));
         } catch (Exception e) {
             log.warning("Failed to initialize bStats metrics: " + e.getMessage());
         }
@@ -119,8 +121,12 @@ public class WorldAccessBlocker extends JavaPlugin {
         return getOverworldSpawn();
     }
 
-    public boolean isRestricted(Player player, String feature) {
-        return bypassManager.isRestricted(player.getUniqueId(), feature);
+    /**
+     * @return {@code true} when the player has no active bypass for the feature,
+     * meaning the global restriction (if any) still applies to them.
+     */
+    public boolean hasNoBypass(Player player, String feature) {
+        return bypassManager.hasNoBypass(player.getUniqueId(), feature);
     }
 
     public void sendRestrictionMessage(Player player, String feature) {

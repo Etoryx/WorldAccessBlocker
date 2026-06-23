@@ -22,12 +22,12 @@ public class WabPlaceholders extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getAuthor() {
-        return String.join(", ", plugin.getDescription().getAuthors());
+        return String.join(", ", plugin.getPluginMeta().getAuthors());
     }
 
     @Override
     public @NotNull String getVersion() {
-        return plugin.getDescription().getVersion();
+        return plugin.getPluginMeta().getVersion();
     }
 
     @Override
@@ -52,7 +52,7 @@ public class WabPlaceholders extends PlaceholderExpansion {
 
     private boolean isBlockedForPlayer(Player player, String feature) {
         Instant now = Instant.now();
-        return plugin.getConfigManager().isRestrictionActive(feature, now) && plugin.isRestricted(player, feature);
+        return plugin.getConfigManager().isRestrictionActive(feature, now) && plugin.hasNoBypass(player, feature);
     }
 
     private String timeLeft(String feature) {

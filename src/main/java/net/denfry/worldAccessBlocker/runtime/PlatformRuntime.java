@@ -8,6 +8,8 @@ public interface PlatformRuntime {
 
     void runAsync(Runnable task);
 
+    void runLater(Runnable task, long delayTicks);
+
     void runForPlayer(Player player, Runnable task);
 
     void teleportPlayer(Player player, Location location);

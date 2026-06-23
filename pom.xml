@@ -6,7 +6,7 @@
 
     <groupId>net.denfry</groupId>
     <artifactId>worldaccessblocker</artifactId>
-    <version>0.9.0</version>
+    <version>0.10.0</version>
     <packaging>jar</packaging>
 
     <name>worldaccessblocker</name>
@@ -36,7 +36,7 @@
                     <relocations>
                         <relocation>
                             <pattern>org.bstats</pattern>
-                            <shadedPattern>net.denfry.worldAccessBlocker</shadedPattern>
+                            <shadedPattern>net.denfry.worldAccessBlocker.libs.bstats</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>
