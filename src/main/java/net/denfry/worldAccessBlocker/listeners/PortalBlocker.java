@@ -84,7 +84,7 @@ public class PortalBlocker implements Listener {
                 event.setCancelled(true);
                 return;
             }
-            for (Entity entity : event.getWorld().getNearbyEntities(blocks.getFirst().getLocation(), 5, 5, 5)) {
+            for (Entity entity : event.getWorld().getNearbyEntities(blocks.get(0).getLocation(), 5, 5, 5)) {
                 if (entity instanceof Player) {
                     player = (Player) entity;
                     break;

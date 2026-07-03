@@ -107,7 +107,7 @@ public class WorldAccessBlocker extends JavaPlugin {
                 .filter(w -> w.getEnvironment() == World.Environment.NORMAL)
                 .findFirst()
                 .map(World::getSpawnLocation)
-                .orElse(Bukkit.getWorlds().getFirst().getSpawnLocation());
+                .orElse(Bukkit.getWorlds().get(0).getSpawnLocation());
     }
 
     public Location getFallbackSpawn(String feature) {

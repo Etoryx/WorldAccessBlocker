@@ -5,6 +5,16 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [0.11.0] — 2026-07-03
+
+### Changed
+
+- **Wider version support: Minecraft 1.20.1 → latest.** The plugin now compiles to Java 17 bytecode (was Java 21) against the Paper 1.20.1 API, so a single JAR loads on 1.20.1–1.20.4 (Java 17) servers *and* 1.20.5+ (Java 21) servers, up to the newest release. The 0.10.0 Java 21 / Paper 1.20.5+ baseline had locked out 1.20.1–1.20.4.
+- Replaced the Java 21 `List.getFirst()` / `getLast()` calls (SequencedCollection API) with index access so the code runs on Java 17.
+- Release workflow now builds the Modrinth game-version list dynamically — every `release` tag from 1.20 upward — instead of a hardcoded set, so new Minecraft versions are covered automatically. Falls back to a static list if the Modrinth tag API is unreachable.
+
+---
+
 ## [0.10.0] — 2026-06-23
 
 ### Added

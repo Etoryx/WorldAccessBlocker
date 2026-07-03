@@ -298,8 +298,8 @@ public class ConfigManager {
                 .map(d -> map.getOrDefault(d, d.toString().toLowerCase() + "s"))
                 .toList();
 
-        if (names.size() == 1) return names.getFirst();
-        String last = names.getLast();
+        if (names.size() == 1) return names.get(0);
+        String last = names.get(names.size() - 1);
         return String.join(", ", names.subList(0, names.size() - 1)) +
                 ("ru".equals(lang) ? " и " : " and ") + last;
     }

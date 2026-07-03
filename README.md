@@ -31,12 +31,12 @@
 
 | Platform | Versions | Status |
 |---|---|---|
-| Paper | 1.20.5 – 1.21.4 | ✅ Full support |
-| Purpur | 1.20.5 – 1.21.4 | ✅ Full support |
+| Paper | 1.20.1+ | ✅ Full support |
+| Purpur | 1.20.1+ | ✅ Full support |
 | Folia | 1.20.5+ | ✅ Native scheduler |
 | Spigot / Bukkit | — | ❌ Not supported (requires Paper's Adventure & scheduler APIs) |
 
-**Requirements:** Java 21+ (Paper 1.20.5+ runs on Java 21). Built against the Paper 1.21.4 API.
+**Requirements:** Java 17+ (Minecraft 1.20.1–1.20.4 run on Java 17; 1.20.5+ require Java 21). Built against the Paper 1.20.1 API for maximum forward compatibility — runs on every release from 1.20.1 up to the latest.
 
 ---
 

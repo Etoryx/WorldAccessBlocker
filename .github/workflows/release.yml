@@ -56,19 +56,30 @@ jobs:
         run: |
           JAR_PATH=$(find target -name "worldaccessblocker-*.jar" ! -name "original-*" | head -1)
           echo "Using JAR: $JAR_PATH"
+          # Game versions: pull every Modrinth "release" in the 1.20+ range so newer
+          # Minecraft versions are picked up automatically on each release. Falls back
+          # to a static list if the tag API is unreachable.
+          GAME_VERSIONS=$(curl -s "https://api.modrinth.com/v2/tag/game_version" \
+            | jq -c '[.[] | select(.version_type == "release") | .version
+                     | select(test("^1\\.(2[0-9]|[3-9][0-9])(\\.[0-9]+)?$"))]' 2>/dev/null || true)
+          if [ -z "$GAME_VERSIONS" ] || [ "$GAME_VERSIONS" = "[]" ] || [ "$GAME_VERSIONS" = "null" ]; then
+            GAME_VERSIONS='["1.20.1","1.20.2","1.20.4","1.20.5","1.20.6","1.21","1.21.1","1.21.2","1.21.3","1.21.4"]'
+          fi
+          echo "Game versions: $GAME_VERSIONS"
           # Write metadata to a file and upload it as a file part. Passing multi-line
           # JSON inline via -F "data=$DATA" corrupts the payload (curl -F parsing),
           # which previously caused Modrinth to reject it with HTTP 400.
           jq -n \
             --arg version "$VERSION" \
             --arg changelog "$CHANGELOG" \
+            --argjson game_versions "$GAME_VERSIONS" \
             '{
               "project_id": "chVqXf9e",
               "version_number": $version,
               "name": ("WorldAccessBlocker " + $version),
               "changelog": $changelog,
               "dependencies": [],
-              "game_versions": ["1.20.5", "1.20.6", "1.21", "1.21.1", "1.21.2", "1.21.3", "1.21.4"],
+              "game_versions": $game_versions,
               "version_type": "release",
               "loaders": ["paper", "purpur", "folia"],
               "featured": true,
