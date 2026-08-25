@@ -1,6 +1,5 @@
 package net.denfry.worldAccessBlocker.runtime;
 
-import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
 public final class PlatformRuntimeFactory {
@@ -17,7 +16,7 @@ public final class PlatformRuntimeFactory {
     public static boolean isFoliaRuntime() {
         try {
             Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
-            return Bukkit.getName().toLowerCase().contains("folia") || Bukkit.getVersion().contains("Folia");
+            return true;
         } catch (ClassNotFoundException ignored) {
             return false;
         }
