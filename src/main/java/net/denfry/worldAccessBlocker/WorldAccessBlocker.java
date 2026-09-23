@@ -88,7 +88,7 @@ public class WorldAccessBlocker extends JavaPlugin {
             log.info("PlaceholderAPI hook enabled.");
         }
 
-        runtime.runRepeatingGlobal(new RestrictionEnforcer(this), 0L, 100L);
+        runtime.runRepeatingGlobal(new RestrictionEnforcer(this), 1L, 100L);
 
         VersionChecker versionChecker = new VersionChecker(this, runtime);
         versionChecker.checkAsync();

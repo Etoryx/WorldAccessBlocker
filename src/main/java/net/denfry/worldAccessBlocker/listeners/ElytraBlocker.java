@@ -40,7 +40,7 @@ public class ElytraBlocker implements Listener {
                     if (enforceFlight) enforceNoGlide(player);
                 });
             }
-        }, 0L, 20L);
+        }, 1L, 20L);
     }
 
     private void enforceNoGlide(Player player) {
