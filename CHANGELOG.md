@@ -5,6 +5,21 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [0.12.0] — 2026-09-23
+
+### Fixed
+
+- **Folia forks (Arbor, Canvas, DeerFolia, Lophine, …) no longer fail to enable** ([#1](https://github.com/Etoryx/WorldAccessBlocker/issues/1)). Folia was detected by the server brand name, so forks fell through to the Bukkit scheduler and crashed with `UnsupportedOperationException` in `ElytraBlocker.start`. Detection now relies only on the presence of the regionised-server class. Thanks to @lijinhong11 ([#2](https://github.com/Etoryx/WorldAccessBlocker/pull/2)).
+- Repeating global tasks on Folia no longer pass a zero initial delay, which the region scheduler rejects.
+
+### Changed
+
+- The Folia adapter calls the Paper scheduler API (`GlobalRegionScheduler`, `AsyncScheduler`, `EntityScheduler`) directly instead of through reflection, and no longer silently falls back to the Bukkit scheduler.
+- Modrinth releases now include the year-based Minecraft versions (26.1, 26.2, …); the version filter only matched `1.x` before.
+- Dependencies: bStats 3.1.0, JUnit 6.1.3, Mockito 5.23.0, Surefire 3.5.6. CI actions bumped to their current major versions.
+
+---
+
 ## [0.11.0] — 2026-07-03
 
 ### Changed

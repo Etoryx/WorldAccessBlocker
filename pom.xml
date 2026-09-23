@@ -6,7 +6,7 @@
 
     <groupId>net.denfry</groupId>
     <artifactId>worldaccessblocker</artifactId>
-    <version>0.11.0</version>
+    <version>0.12.0</version>
     <packaging>jar</packaging>
 
     <name>worldaccessblocker</name>
@@ -90,7 +90,7 @@
         <dependency>
             <groupId>org.bstats</groupId>
             <artifactId>bstats-bukkit</artifactId>
-            <version>3.0.2</version>
+            <version>3.1.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

@@ -14,7 +14,8 @@ public class FoliaRuntimeAdapter implements PlatformRuntime {
 
     @Override
     public void runRepeatingGlobal(Runnable task, long initialDelayTicks, long periodTicks) {
-        Bukkit.getGlobalRegionScheduler().runAtFixedRate(plugin, i -> task.run(), initialDelayTicks, periodTicks);
+        // Folia rejects a non-positive initial delay with IllegalArgumentException.
+        Bukkit.getGlobalRegionScheduler().runAtFixedRate(plugin, i -> task.run(), Math.max(1L, initialDelayTicks), periodTicks);
     }
 
     @Override

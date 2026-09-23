@@ -5,7 +5,7 @@
 [![Version](https://img.shields.io/modrinth/v/worldaccessblocker?label=Modrinth)](https://modrinth.com/plugin/worldaccessblocker)
 [![License](https://img.shields.io/github/license/denfry/WorldAccessBlocker)](LICENSE)
 
-**WorldAccessBlocker** is a lightweight Minecraft plugin that restricts player access to the Nether, the End, elytra flight, and custom worlds — by fixed date or recurring weekly schedule. Built for Paper and its forks (Purpur, Folia), using the native Adventure and Folia-aware schedulers.
+**WorldAccessBlocker** is a lightweight Minecraft plugin that restricts player access to the Nether, the End, elytra flight, and custom worlds — by fixed date or recurring weekly schedule. Built for Paper and its forks (Purpur, Folia and Folia forks), using the native Adventure and Folia-aware schedulers.
 
 ---
 
@@ -33,7 +33,7 @@
 |---|---|---|
 | Paper | 1.20.1+ | ✅ Full support |
 | Purpur | 1.20.1+ | ✅ Full support |
-| Folia | 1.20.5+ | ✅ Native scheduler |
+| Folia (and forks: Arbor, Canvas, …) | 1.20.5+ | ✅ Native scheduler |
 | Spigot / Bukkit | — | ❌ Not supported (requires Paper's Adventure & scheduler APIs) |
 
 **Requirements:** Java 17+ (Minecraft 1.20.1–1.20.4 run on Java 17; 1.20.5+ require Java 21). Built against the Paper 1.20.1 API for maximum forward compatibility — runs on every release from 1.20.1 up to the latest.
@@ -152,7 +152,7 @@ Install [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/
 
 ### Does WorldAccessBlocker work with Folia?
 
-Yes. Since v0.9.0, WorldAccessBlocker uses a native `PlatformRuntime` abstraction that dispatches tasks via the Folia regional scheduler when running on Folia, and the standard Bukkit scheduler on Paper/Spigot.
+Yes. Since v0.9.0, WorldAccessBlocker uses a native `PlatformRuntime` abstraction that dispatches tasks via the Folia regional scheduler when running on Folia or any Folia fork (Arbor, Canvas, DeerFolia, …), and the standard Bukkit scheduler on Paper/Spigot.
 
 ### Can I restrict a world by date and then switch to a schedule later?
 
