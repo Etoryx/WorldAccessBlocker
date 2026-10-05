@@ -4,6 +4,7 @@
 [![Players](https://img.shields.io/bstats/players/26810?color=red&label=Players)](https://bstats.org/plugin/bukkit/WorldAccessBlocker/26810)
 [![Version](https://img.shields.io/modrinth/v/worldaccessblocker?label=Modrinth)](https://modrinth.com/plugin/worldaccessblocker)
 [![License](https://img.shields.io/github/license/denfry/WorldAccessBlocker)](LICENSE)
+[![Discord](https://img.shields.io/badge/Discord-Join%20the%20community-5865F2?logo=discord&logoColor=white)](https://discord.gg/mVZcNUAGZt)
 
 **WorldAccessBlocker** is a lightweight Minecraft plugin that restricts player access to the Nether, the End, elytra flight, and custom worlds — by fixed date or recurring weekly schedule. Built for Paper and its forks (Purpur, Folia and Folia forks), using the native Adventure and Folia-aware schedulers.
 
